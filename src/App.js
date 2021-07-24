@@ -12,6 +12,8 @@ import Home from "./components/home";
 import Movie from "./components/Movie";
 import NotFound from "./components/NotFound";
 
+import Login from "./components/login";
+
 //context
 
 import UserProvider from "./context";
@@ -23,6 +25,7 @@ const App = () => (
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/:movieId" element={<Movie />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
