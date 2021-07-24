@@ -12,16 +12,22 @@ import Home from "./components/home";
 import Movie from "./components/Movie";
 import NotFound from "./components/NotFound";
 
+//context
+
+import UserProvider from "./context";
+
 const App = () => (
   <Router>
-    <Header />
+    <UserProvider>
+      <Header />
 
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/:movieId" element={<Movie />} />
-      <Route path="/*" element={<NotFound />} />
-    </Routes>
-    <GlobalStyle />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/:movieId" element={<Movie />} />
+        <Route path="/*" element={<NotFound />} />
+      </Routes>
+      <GlobalStyle />
+    </UserProvider>
   </Router>
 );
 
