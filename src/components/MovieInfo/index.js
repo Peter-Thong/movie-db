@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import PropTypes from "prop-types";
 
 import Thumb from "../Thumb";
+
+import Rate from "../Rate";
+
+import API from "../../API";
 
 import { IMAGE_BASE_URL, BACKDROP_SIZE, POSTER_SIZE } from "../../config";
 
@@ -10,41 +14,58 @@ import NoImg from "../../images/no_image.jpg";
 
 import { Wrapper, Content, Text } from "./MovieInfo.styles";
 
-const MovieInfo = ({ movie }) => (
-  <Wrapper backdrop={movie.backdrop_path}>
-    <Content>
-      <Thumb
-        image={
-          movie.poster_path
-            ? `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`
-            : NoImg
-        }
-        clickable={false}
-        alt="movie-thumb"
-      />
+import { Context } from "../../context";
 
-      <Text>
-        <h1>{movie.title}</h1>
-        <h3>PLOT</h3>
-        <p>{movie.overview}</p>
+const MovieInfo = ({ movie }) => {
+  const [user] = useContext(Context);
 
-        <div className="rating-directors">
-          <div>
-            <h3>RATING</h3>
-            <div className="score">{movie.vote_average}</div>
+  const handleRating = async (value) => {
+    const rate = await API.rateMovie(user.sessionId, movie.id, value);
+  };
+
+  return (
+    <Wrapper backdrop={movie.backdrop_path}>
+      <Content>
+        <Thumb
+          image={
+            movie.poster_path
+              ? `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`
+              : NoImg
+          }
+          clickable={false}
+          alt="movie-thumb"
+        />
+
+        <Text>
+          <h1>{movie.title}</h1>
+          <h3>PLOT</h3>
+          <p>{movie.overview}</p>
+
+          <div className="rating-directors">
+            <div>
+              <h3>RATING</h3>
+              <div className="score">{movie.vote_average}</div>
+            </div>
+
+            <div className="director">
+              <h3>DIRECTOR{movie.directors.length > 1 ? "S" : ""}</h3>
+              {movie.directors.map((director) => (
+                <p key={director.credit_id}>{director.name}</p>
+              ))}
+            </div>
           </div>
 
-          <div className="director">
-            <h3>DIRECTOR{movie.directors.length > 1 ? "S" : ""}</h3>
-            {movie.directors.map((director) => (
-              <p key={director.credit_id}>{director.name}</p>
-            ))}
-          </div>
-        </div>
-      </Text>
-    </Content>
-  </Wrapper>
-);
+          {user && (
+            <div>
+              <p>Rate Movie</p>
+              <Rate callback={handleRating} />
+            </div>
+          )}
+        </Text>
+      </Content>
+    </Wrapper>
+  );
+};
 
 MovieInfo.propTypes = {
   movie: PropTypes.object,
